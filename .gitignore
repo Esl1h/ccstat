@@ -4,3 +4,4 @@ ccstat
 *.tmp.c
 .*.v3cc.*/
 *.log
+.abacusai/
