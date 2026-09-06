@@ -113,3 +113,15 @@ fn test_last_path_segment() {
 	assert last_path_segment('vai') == 'vai'
 	assert last_path_segment('/') == ''
 }
+
+fn test_parse_status_error_is_one_plain_line() {
+	// json2 decorates decode errors with ANSI codes and a multi-line
+	// context; a statusline must get one plain line back.
+	if _ := parse_status('garbage') {
+		assert false, 'expected an error'
+	} else {
+		assert !err.msg().contains('\x1b'), err.msg()
+		assert !err.msg().contains('\n'), err.msg()
+		assert err.msg() != ''
+	}
+}
