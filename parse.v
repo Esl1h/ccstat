@@ -30,7 +30,7 @@ pub fn parse_status(raw string) !Status {
 			s.dir_name = last_path_segment(v.str())
 		}
 		if v := w['git_worktree'] {
-			s.branch = v.str()
+			s.worktree = v.str()
 		}
 		if repo_val := w['repo'] {
 			r := repo_val.as_map()

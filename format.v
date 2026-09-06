@@ -36,8 +36,8 @@ fn progress_bar(pct f64, width int) string {
 	return sb.str()
 }
 
-// format_status renders two lines: identity (model, directory, branch,
-// open PR) and usage (context bar, cost, cache hit rate, 5-hour rate
+// format_status renders two lines: identity (model, directory, linked
+// worktree, repo, open PR) and usage (context bar, cost, cache hit rate, 5-hour rate
 // limit). Every segment after the model name is conditional on the
 // matching field being present in the input.
 pub fn format_status(s Status) string {
@@ -46,9 +46,10 @@ pub fn format_status(s Status) string {
 	if s.dir_name != '' {
 		line1.write_string(' ${dim}${s.dir_name}${reset}')
 	}
-	if s.branch != '' {
-		line1.write_string(' (${s.branch})')
-	} else if s.repo_name != '' {
+	if s.worktree != '' {
+		line1.write_string(' wt:${s.worktree}')
+	}
+	if s.repo_name != '' {
 		line1.write_string(' [${s.repo_name}]')
 	}
 	if s.has_pr {

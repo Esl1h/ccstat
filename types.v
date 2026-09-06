@@ -20,7 +20,10 @@ struct Status {
 mut:
 	model_display string
 	dir_name      string
-	branch        string
+	// worktree is workspace.git_worktree: the name of a linked worktree
+	// (git worktree add), absent in the main working tree. It is not the
+	// branch name; Claude Code's statusline JSON carries no branch field.
+	worktree      string
 	repo_name     string
 	cost_usd      f64
 	used_pct      f64
