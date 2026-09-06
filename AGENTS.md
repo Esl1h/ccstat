@@ -7,26 +7,26 @@ Instructions for coding agents working in this repository.
 `ccstat` is a V CLI: a Claude Code statusline command. It parses the JSON
 Claude Code writes to the command's stdin on every turn
 (https://code.claude.com/docs/en/statusline.md) and prints a compact,
-color-coded status line. The whole point is startup speed — measured at
+color-coded status line. The whole point is startup speed, measured at
 about 1ms per invocation on this machine (100-run average via `date
-+%s%N`, including the shell's own process-spawn cost) — since a statusline
++%s%N`, including the shell's own process-spawn cost), since a statusline
 command runs constantly and an interpreted one costs 80-300ms just to
 boot.
 
-## V is under-represented in your training data — verify, never guess
+## V is under-represented in your training data, verify, never guess
 
 Same standing rule as `vai`, `redact`, `vjsonrpc`. Compile after every
 meaningful change: `v test .`. This repo has no heavy dependency
 (`net.http` and friends), so it compiles in seconds, not the
-dozens-of-seconds `vai` needs — if a build here ever takes that long,
+dozens-of-seconds `vai` needs, if a build here ever takes that long,
 something is wrong (check for an accidentally-added `vai` import; see Do
 not, below).
 
-## The statusline JSON contract — verify against the real page, not memory
+## The statusline JSON contract, verify against the real page, not memory
 
 Every field ccstat reads was confirmed against
 https://code.claude.com/docs/en/statusline.md directly (not from a
-subagent's paraphrase — the first research pass came back flagged by the
+subagent's paraphrase, the first research pass came back flagged by the
 harness as possibly containing an instruction-shaped pattern from the
 fetched page, most likely a false positive triggered by the page's own
 "Documentation Index" preamble, but it was independently re-verified
@@ -45,7 +45,7 @@ Facts worth remembering, since the contract is large and mostly optional:
   before the first API call and again right after `/compact`.
 - `cost.total_cost_usd` is already the authoritative, pre-computed session
   total. Don't recompute it from `context_window.current_usage` and a
-  pricing table — that's redundant and can drift from what Claude Code
+  pricing table, that's redundant and can drift from what Claude Code
   itself reports.
 - `context_window.used_percentage` is calculated from input tokens only
   (`input_tokens + cache_creation_input_tokens + cache_read_input_tokens`),
@@ -55,12 +55,12 @@ Facts worth remembering, since the contract is large and mostly optional:
 ## Gotchas found in this codebase
 
 - `json2.Any` map access needs the same `or {}` / `if v := m[key] {}`
-  discipline as `vai`, `redact`, `vjsonrpc` found — a missing key on a
+  discipline as `vai`, `redact`, `vjsonrpc` found, a missing key on a
   sum-typed map value silently returns the first-declared variant's zero
   value if you skip it. Every optional field here is read through
   `if v := obj[key] { ... }`, never a bare index.
 - `${x:.0f}` / `${x:.4f}`-style printf format specifiers work directly
-  inside V string interpolation — confirmed by probe before writing
+  inside V string interpolation, confirmed by probe before writing
   `format.v`. No manual rounding/string-building needed for the percentage
   and dollar-amount display.
 
@@ -80,7 +80,7 @@ Facts worth remembering, since the contract is large and mostly optional:
   line 1, usage (context bar, cost, cache, rate limit) on line 2. Matches
   the pattern in Claude Code's own multi-line example on the docs page.
 - **Absent field means the segment doesn't print, never a placeholder
-  like "n/a" or "0%"** — except the context bar itself, which does show
+  like "n/a" or "0%"**, except the context bar itself, which does show
   `ctx: n/a` when `used_percentage` is null, since leaving the whole
   second line ambiguous (is it 0% or unknown?) is worse than being
   explicit about not knowing yet.
@@ -96,7 +96,7 @@ make fmt     # v fmt -w .
 ## Do not
 
 - Add `vai` (or any dependency) to `v.mod` without a concrete reason tied
-  to a feature actually being built — see the cross-session-total note
+  to a feature actually being built, see the cross-session-total note
   above for why this was deliberately kept dependency-free.
 - Recompute anything Claude Code's JSON already gives you a precomputed
   answer for (`total_cost_usd`, `used_percentage`). Display it; don't

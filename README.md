@@ -28,7 +28,7 @@ Then point Claude Code at it in `~/.claude/settings.json`:
 
 `ccstat` reads exactly what Claude Code already sends on stdin (documented at [code.claude.com/docs/en/statusline](https://code.claude.com/docs/en/statusline)) and formats it. It does not recompute cost or re-read the session transcript: `cost.total_cost_usd` is already the authoritative number for the running session, and `context_window` already carries the pre-calculated usage percentage. Every field is optional in the real contract (most are absent until the first API response, version-gated, or subscriber-only), and a missing or `null` field just means that segment of the line doesn't print, never a crash or a placeholder.
 
-Not built: a cross-session total (e.g. "spent today across every session"). Claude Code's own JSON only ever describes the current session; a running total would need to read every `~/.claude/projects/**/*.jsonl` file on every invocation, and doing that without measuring the cost first risks making a tool whose entire pitch is speed slow in practice. If this is wanted later, it belongs behind an opt-in flag, not the default path — see AGENTS.md.
+Not built: a cross-session total (e.g. "spent today across every session"). Claude Code's own JSON only ever describes the current session; a running total would need to read every `~/.claude/projects/**/*.jsonl` file on every invocation, and doing that without measuring the cost first risks making a tool whose entire pitch is speed slow in practice. If this is wanted later, it belongs behind an opt-in flag, not the default path, see AGENTS.md.
 
 ## Development
 
