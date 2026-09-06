@@ -69,7 +69,7 @@ fn test_parse_full_fixture() {
 	}
 	assert s.model_display == 'Sonnet'
 	assert s.dir_name == 'vai'
-	assert s.branch == 'feature-xyz'
+	assert s.worktree == 'feature-xyz'
 	assert s.repo_name == 'vai'
 	assert s.cost_usd == 0.01234
 	assert s.has_pct
@@ -94,7 +94,7 @@ fn test_parse_minimal_fixture_no_crash_on_absent_fields() {
 		return
 	}
 	assert s.model_display == 'Sonnet'
-	assert s.branch == ''
+	assert s.worktree == ''
 	assert !s.has_pct
 	assert !s.has_usage
 	assert !s.has_cache_hit

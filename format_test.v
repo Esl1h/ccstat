@@ -4,7 +4,7 @@ fn test_format_status_full() {
 	s := Status{
 		model_display: 'Sonnet'
 		dir_name: 'vai'
-		branch: 'feature-xyz'
+		worktree: 'feature-xyz'
 		cost_usd: 0.01234
 		used_pct: 8.0
 		has_pct: true
@@ -21,7 +21,7 @@ fn test_format_status_full() {
 	out := format_status(s)
 	assert out.contains('Sonnet')
 	assert out.contains('vai')
-	assert out.contains('(feature-xyz)')
+	assert out.contains('wt:feature-xyz')
 	assert out.contains('PR#1234')
 	assert out.contains('8%')
 	assert out.contains('\$0.0123')
