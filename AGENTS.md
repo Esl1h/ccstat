@@ -7,11 +7,11 @@ Instructions for coding agents working in this repository.
 `ccstat` is a V CLI: a Claude Code statusline command. It parses the JSON
 Claude Code writes to the command's stdin on every turn
 (https://code.claude.com/docs/en/statusline.md) and prints a compact,
-color-coded status line. The whole point is startup speed, measured at
-about 1ms per invocation on this machine (100-run average via `date
-+%s%N`, including the shell's own process-spawn cost), since a statusline
-command runs constantly and an interpreted one costs 80-300ms just to
-boot.
+color-coded status line. The whole point is startup speed: measured at
+2 to 3 ms per invocation on this machine (100-run average via `date
++%s%N`, including the shell's own pipe and process-spawn cost), while a
+statusline command runs constantly and an interpreted one costs 80-300ms
+just to boot.
 
 ## V is under-represented in your training data, verify, never guess
 
@@ -43,6 +43,12 @@ Facts worth remembering, since the contract is large and mostly optional:
   merges or closes; `effort` only appears for models that support it;
   `context_window.current_usage` and the two percentage fields are `null`
   before the first API call and again right after `/compact`.
+- `workspace.git_worktree` is the name of a *linked* worktree (`git
+  worktree add`), absent in the main working tree. It is not the branch;
+  there is no branch field in the contract at all (the docs' own example
+  scripts run `git branch --show-current` for it). ccstat shows it as
+  `wt:<name>` and deliberately does not run `git`, so the hot path stays a
+  single JSON parse.
 - `cost.total_cost_usd` is already the authoritative, pre-computed session
   total. Don't recompute it from `context_window.current_usage` and a
   pricing table, that's redundant and can drift from what Claude Code
@@ -59,6 +65,10 @@ Facts worth remembering, since the contract is large and mostly optional:
   sum-typed map value silently returns the first-declared variant's zero
   value if you skip it. Every optional field here is read through
   `if v := obj[key] { ... }`, never a bare index.
+- json2 bakes ANSI color escapes and a multi-line context into its decode
+  error messages even when piped (same finding as `vjsonrpc`);
+  `parse_status` flattens that to one plain line (`one_line_error`) so a
+  bad payload shows `ccstat: <reason>` instead of a colored block.
 - `${x:.0f}` / `${x:.4f}`-style printf format specifiers work directly
   inside V string interpolation, confirmed by probe before writing
   `format.v`. No manual rounding/string-building needed for the percentage
@@ -76,7 +86,7 @@ Facts worth remembering, since the contract is large and mostly optional:
   it's actually fast enough. If a future `ccstat --daily`-style mode wants
   cross-session totals, that's the natural place for `vai.local` to come
   in, gated behind an explicit flag so the hot path stays untouched.
-- **Two-line output, not one.** Identity (model, dir, branch/repo, PR) on
+- **Two-line output, not one.** Identity (model, dir, worktree/repo, PR) on
   line 1, usage (context bar, cost, cache, rate limit) on line 2. Matches
   the pattern in Claude Code's own multi-line example on the docs page.
 - **Absent field means the segment doesn't print, never a placeholder
