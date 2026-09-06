@@ -10,7 +10,7 @@ import json2
 // exists with an open PR. A missing or null field is left at its zero
 // value, never an error.
 pub fn parse_status(raw string) !Status {
-	val := json2.decode[json2.Any](raw)!
+	val := json2.decode[json2.Any](raw) or { return error(one_line_error(err.msg())) }
 	if val !is map[string]json2.Any {
 		return error('expected a JSON object')
 	}
@@ -110,6 +110,32 @@ pub fn parse_status(raw string) !Status {
 	}
 
 	return s
+}
+
+// one_line_error flattens json2's decode error, which carries a multi-line
+// context decorated with ANSI color codes even when not writing to a tty,
+// into the single plain line a statusline can show.
+fn one_line_error(msg string) string {
+	mut out := []u8{}
+	b := msg.bytes()
+	mut i := 0
+	for i < b.len {
+		if b[i] == 27 && i + 1 < b.len && b[i + 1] == `[` {
+			i += 2
+			for i < b.len && !(b[i] >= 0x40 && b[i] <= 0x7e) {
+				i++
+			}
+			i++
+			continue
+		}
+		out << b[i]
+		i++
+	}
+	lines := out.bytestr().split_into_lines().filter(it.trim_space() != '')
+	if lines.len == 0 {
+		return 'invalid json'
+	}
+	return lines[0].trim_space()
 }
 
 fn last_path_segment(path string) string {
