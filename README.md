@@ -10,6 +10,15 @@ No git branch: Claude Code's statusline JSON has no branch field (`workspace.git
 
 ## Install
 
+Prebuilt binaries for Linux (amd64) and macOS (arm64) are attached to each [release](https://github.com/Esl1h/ccstat/releases) (use `ccstat-macos-arm64` on a Mac):
+
+```sh
+curl -fsSLo ~/.local/bin/ccstat https://github.com/Esl1h/ccstat/releases/latest/download/ccstat-linux-amd64
+chmod +x ~/.local/bin/ccstat
+```
+
+Or build from source:
+
 ```sh
 git clone https://github.com/Esl1h/ccstat
 cd ccstat
