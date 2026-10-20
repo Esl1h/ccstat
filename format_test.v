@@ -3,20 +3,20 @@ module main
 fn test_format_status_full() {
 	s := Status{
 		model_display: 'Sonnet'
-		dir_name: 'vai'
-		worktree: 'feature-xyz'
-		cost_usd: 0.01234
-		used_pct: 8.0
-		has_pct: true
+		dir_name:      'vai'
+		worktree:      'feature-xyz'
+		cost_usd:      0.01234
+		used_pct:      8.0
+		has_pct:       true
 		has_cache_hit: true
-		cache_hit: 0.91
-		rate_5h: RateWindow{
+		cache_hit:     0.91
+		rate_5h:       RateWindow{
 			used_pct: 23.5
-			present: true
+			present:  true
 		}
-		has_pr: true
-		pr_number: 1234
-		pr_state: 'pending'
+		has_pr:        true
+		pr_number:     1234
+		pr_state:      'pending'
 	}
 	out := format_status(s)
 	assert out.contains('Sonnet')
@@ -33,7 +33,7 @@ fn test_format_status_full() {
 fn test_format_status_minimal_has_no_optional_segments() {
 	s := Status{
 		model_display: 'Sonnet'
-		cost_usd: 0.0
+		cost_usd:      0.0
 	}
 	out := format_status(s)
 	assert out.contains('Sonnet')

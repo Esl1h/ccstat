@@ -82,7 +82,7 @@ pub fn parse_status(raw string) !Status {
 			if v := fh['used_percentage'] {
 				s.rate_5h = RateWindow{
 					used_pct: v.f64()
-					present: true
+					present:  true
 				}
 			}
 		}
