@@ -1,5 +1,7 @@
 # ccstat
 
+[![CI](https://github.com/Esl1h/ccstat/actions/workflows/ci.yml/badge.svg)](https://github.com/Esl1h/ccstat/actions/workflows/ci.yml)
+
 A [V](https://vlang.io) statusline command for [Claude Code](https://claude.com/claude-code): model, working directory, repository name, linked git worktree (when inside one), an open PR badge, a color-coded context-usage bar, session cost, prompt-cache hit rate, and 5-hour rate-limit usage.
 
 The reason to write this in V instead of Python or Node: a statusline command runs on every turn. An interpreted script costs 80-300ms just to boot before it does anything. This is a static binary, no runtime, measured at 2 to 3 ms per invocation including the shell's own pipe and process-spawn overhead (100-run average with `date +%s%N`).
